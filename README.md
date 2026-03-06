@@ -54,17 +54,7 @@ estraiTest
 
 La pipeline segue il seguente flusso:
 
-Input CSV
-↓
-run_tsdetect.ps1
-↓
-TestSmellDetector.jar
-↓
-Output CSV intermedi
-↓
-UnisciRisultati.ps1
-↓
-Output finale aggregato
+Input CSV -> run_tsdetect.ps1 -> TestSmellDetector.jar -> Output CSV intermedi -> UnisciRisultati.ps1 -> Output finale aggregato
 
 
 # Requisiti
