@@ -3,23 +3,22 @@ import shutil
 from pathlib import Path
 from typing import Optional, Dict, Tuple
 
-#SCRIPT PER ESTRARRE CLASSI DAL SERVER 1
+# SCRIPT PER ESTRARRE CLASSI DAL SERVER 1
 SOURCE_ROOT = Path(r"C:\Users\lidia\Downloads\Server1_VolumeT0_2025-10-26_17-08")  # root estratto
 OUT_DIR = Path(r"/DATASET")
 LOG_FILE = OUT_DIR / "_dataset_log.csv"
 
-# Nel tuo dataset: PlayerXX e GameYYY
+# Nel  dataset: PlayerXX e GameYYY
 PLAYER_RE = re.compile(r"(?:^|[\\/])Player(?P<id>\d+)(?:[\\/]|$)", re.IGNORECASE)
-GAME_RE   = re.compile(r"(?:^|[\\/])Game(?P<num>\d+)(?:[\\/]|$)", re.IGNORECASE)
+GAME_RE = re.compile(r"(?:^|[\\/])Game(?P<num>\d+)(?:[\\/]|$)", re.IGNORECASE)
 
 # Username dentro al file: "Username: michele.perlotto@unina.it"
 USERNAME_RE = re.compile(r"Username:\s*(?P<user>[^\s\r\n]+)", re.IGNORECASE)
 
 # Test file: in base al dataset basta ".java" sotto src/test
-# Se vuoi restringere a *Test.java / *Tests.java, dimmelo e lo stringiamo.
+
 TEST_FILE_RE = re.compile(r".*\.java$", re.IGNORECASE)
 
-# =========================
 
 def is_test_java(p: Path) -> bool:
     s = str(p).replace("\\", "/").lower()
@@ -27,13 +26,16 @@ def is_test_java(p: Path) -> bool:
         return False
     return bool(TEST_FILE_RE.match(p.name))
 
+
 def extract_player_id(p: Path) -> Optional[str]:
     m = PLAYER_RE.search(str(p))
     return m.group("id") if m else None
 
+
 def extract_game_num(p: Path) -> Optional[int]:
     m = GAME_RE.search(str(p))
     return int(m.group("num")) if m else None
+
 
 def extract_username_from_file(p: Path) -> Optional[str]:
     # Lettura robusta: molti dataset hanno encoding misto
@@ -46,16 +48,12 @@ def extract_username_from_file(p: Path) -> Optional[str]:
         return None
     return m.group("user").strip()
 
+
 def sanitize_for_filename(s: str) -> str:
-    """
-    Windows-safe filename:
-    - sostituisce caratteri non validi con "_"
-    - riduce sequenze di "_" ripetute
-    """
+
     s = s.strip()
-    # sostituisci separatori e caratteri proibiti
+
     s = re.sub(r'[<>:"/\\|?*\s]+', "_", s)
-    # @ e . li puoi tenere? "." sì, "@" è ok su Windows, ma spesso è scomodo.
     # Per sicurezza trasformo '@' in '_'
     s = s.replace("@", "_")
     # comprimi underscore multipli
@@ -64,6 +62,7 @@ def sanitize_for_filename(s: str) -> str:
     s = s.strip("_")
     # fallback se vuoto
     return s if s else "unknown"
+
 
 def unique_path(base: Path) -> Path:
     """Evita overwrite: se esiste già, aggiunge _2, _3, ..."""
@@ -77,6 +76,7 @@ def unique_path(base: Path) -> Path:
         if not cand.exists():
             return cand
         i += 1
+
 
 def main():
     OUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -135,6 +135,7 @@ def main():
     print(f"Skipped (missing Player/Game in path): {skipped}")
     print(f"Selected & copied to DATASET: {copied}")
     print(f"Log: {LOG_FILE}")
+
 
 if __name__ == "__main__":
     main()

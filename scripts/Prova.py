@@ -8,7 +8,7 @@ SOURCE_ROOT = Path(r"C:\Users\lidia\Downloads\Server2_VolumeT0_2025-10-26_17-17"
 OUT_DIR = Path(r"/DATASET")
 LOG_FILE = OUT_DIR / "_dataset_log.csv"
 
-# Nel tuo dataset: PlayerXX e GameYYY
+# Nel  dataset: PlayerXX e GameYYY
 PLAYER_RE = re.compile(r"(?:^|[\\/])Player(?P<id>\d+)(?:[\\/]|$)", re.IGNORECASE)
 GAME_RE   = re.compile(r"(?:^|[\\/])Game(?P<num>\d+)(?:[\\/]|$)", re.IGNORECASE)
 
@@ -16,10 +16,10 @@ GAME_RE   = re.compile(r"(?:^|[\\/])Game(?P<num>\d+)(?:[\\/]|$)", re.IGNORECASE)
 USERNAME_RE = re.compile(r"Username:\s*(?P<user>[^\s\r\n]+)", re.IGNORECASE)
 
 # Test file: in base al dataset basta ".java" sotto src/test
-# Se vuoi restringere a *Test.java / *Tests.java, dimmelo e lo stringiamo.
+
 TEST_FILE_RE = re.compile(r".*\.java$", re.IGNORECASE)
 
-# =========================
+
 
 def is_test_java(p: Path) -> bool:
     s = str(p).replace("\\", "/").lower()
@@ -47,15 +47,10 @@ def extract_username_from_file(p: Path) -> Optional[str]:
     return m.group("user").strip()
 
 def sanitize_for_filename(s: str) -> str:
-    """
-    Windows-safe filename:
-    - sostituisce caratteri non validi con "_"
-    - riduce sequenze di "_" ripetute
-    """
+
     s = s.strip()
-    # sostituisci separatori e caratteri proibiti
+
     s = re.sub(r'[<>:"/\\|?*\s]+', "_", s)
-    # @ e . li puoi tenere? "." sì, "@" è ok su Windows, ma spesso è scomodo.
     # Per sicurezza trasformo '@' in '_'
     s = s.replace("@", "_")
     # comprimi underscore multipli

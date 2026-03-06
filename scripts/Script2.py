@@ -16,7 +16,7 @@ def extract_production_class_name(test_path: str):
     return f"{m.group(1)}.java" if m else None
 
 
-# === LOAD CSV (SENZA HEADER) ===
+# LOAD CSV SENZA HEADER
 df = pd.read_csv(
     CSV_INPUT,
     header=None,          # 🔴 fondamentale
@@ -24,10 +24,10 @@ df = pd.read_csv(
     dtype=str
 )
 
-# assicuriamoci che la terza colonna esista
+# la terza colonna esiste
 df["pathToProductionFile"] = df["pathToProductionFile"].fillna("")
 
-# === PROCESS ===
+
 for idx, row in df.iterrows():
     test_path = row["pathToTestFile"]
     if not test_path:
@@ -40,7 +40,7 @@ for idx, row in df.iterrows():
     # aggiungiamo SOLO la terza colonna
     df.at[idx, "pathToProductionFile"] = (PRODUCTION_DIR / prod_class).as_posix()
 
-# === SAVE (ANCORA SENZA HEADER) ===
+
 df.to_csv(CSV_OUTPUT, index=False, header=False)
-print("✅ Terza colonna pathToProductionFile aggiunta")
-print(f"📄 File salvato in {CSV_OUTPUT}")
+print(" Terza colonna pathToProductionFile aggiunta")
+print(f" File salvato in {CSV_OUTPUT}")
